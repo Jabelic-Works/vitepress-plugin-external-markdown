@@ -121,17 +121,3 @@ root: new URL('..', import.meta.url).pathname
 
 これにより、`vitepress dev docs` のように monorepo root から command を実行しても、
 helper が同じ root を使って deterministic に metadata を生成できます。
-
-## deploy
-
-この repository には、CI と GitHub Pages deploy 用の GitHub Actions workflow が含まれています。
-
-- Pull request では format、lint、typecheck、test、package build、docs build、package dry-run を実行します。
-- `main` への push でも同じ CI check を実行します。
-- `main` への push では、VitePress docs を build して `docs/.vitepress/dist` を GitHub Pages に deploy します。
-
-deploy 先は以下です。
-
-```txt
-https://jabelic-works.github.io/vitepress-plugin-external-markdown/
-```

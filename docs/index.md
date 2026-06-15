@@ -120,17 +120,3 @@ root: new URL('..', import.meta.url).pathname
 
 This makes helper calls deterministic even when commands are run from the
 monorepo root, for example `vitepress dev docs`.
-
-## Deployment
-
-This repository includes GitHub Actions workflows for CI and GitHub Pages.
-
-- Pull requests run formatting, linting, typechecking, tests, package build, docs build, and package dry-run checks.
-- Pushes to `main` run the same CI checks.
-- Pushes to `main` also build the VitePress docs and deploy `docs/.vitepress/dist` to GitHub Pages.
-
-The deployed site is published at:
-
-```txt
-https://jabelic-works.github.io/vitepress-plugin-external-markdown/
-```
