@@ -18,6 +18,11 @@ Run the VitePress docs locally:
 pnpm docs:dev
 ```
 
+The documentation site is built with VitePress and deployed to GitHub Pages from
+the `main` branch:
+
+https://jabelic-works.github.io/vitepress-plugin-external-markdown/
+
 ## Install
 
 ```sh

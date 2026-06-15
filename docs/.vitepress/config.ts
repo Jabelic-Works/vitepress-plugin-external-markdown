@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'vitepress-plugin-external-markdown',
   description: 'Materialize Markdown files outside a VitePress srcDir as generated pages.',
+  base: '/vitepress-plugin-external-markdown/',
   cleanUrls: true,
   lastUpdated: true,
   themeConfig: {
