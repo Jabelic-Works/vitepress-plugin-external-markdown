@@ -38,6 +38,7 @@
     "format:check": "oxfmt . --check",
     "lint": "oxlint . && node scripts/check-no-let.mjs",
     "lint:strict": "oxlint . --deny-warnings && node scripts/check-no-let.mjs",
+    "release:check": "node scripts/check-release-version.mjs && node scripts/check-npm-version-unpublished.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

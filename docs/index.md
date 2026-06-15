@@ -134,3 +134,33 @@ The deployed site is published at:
 ```txt
 https://jabelic-works.github.io/vitepress-plugin-external-markdown/
 ```
+
+## npm publishing
+
+Package releases are published from GitHub Releases using npm Trusted
+Publishing. This avoids storing a long-lived `NPM_TOKEN` in GitHub Secrets.
+
+Configure the package on npmjs.com with the following trusted publisher fields.
+
+| Field                | Value                                |
+| -------------------- | ------------------------------------ |
+| Publisher            | GitHub Actions                       |
+| Organization or user | `Jabelic-Works`                      |
+| Repository           | `vitepress-plugin-external-markdown` |
+| Workflow filename    | `publish.yml`                        |
+| Allowed action       | `npm publish`                        |
+| Environment name     | Leave blank                          |
+
+The workflow runs on GitHub-hosted `ubuntu-latest` with Node.js 24 and
+`id-token: write` so npm can authenticate through OIDC.
+
+To publish a release:
+
+1. Update `package.json` version.
+2. Merge the release commit to `main`.
+3. Create and publish a GitHub Release with a tag matching the package version, for example `v0.1.0`.
+
+The publish workflow checks that the release tag matches `package.json` and
+that the exact npm version has not already been published before running
+`npm publish`. If a release job needs to be retried manually, run the workflow
+dispatch against the same version tag, not against `main`.

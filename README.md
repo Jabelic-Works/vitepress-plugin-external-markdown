@@ -23,6 +23,13 @@ the `main` branch:
 
 https://jabelic-works.github.io/vitepress-plugin-external-markdown/
 
+Package releases are published to npm from GitHub Releases using npm Trusted
+Publishing. Configure npm trusted publishing for this repository with workflow
+filename `publish.yml`, then publish a GitHub Release whose tag matches
+`package.json` version, for example `v0.1.0`. The release workflow uses Node.js
+24 so that npm Trusted Publishing can authenticate through OIDC without an
+`NPM_TOKEN`.
+
 ## Install
 
 ```sh
