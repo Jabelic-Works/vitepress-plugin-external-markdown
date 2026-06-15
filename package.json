@@ -14,6 +14,8 @@
   "files": [
     "dist/**/*.d.ts",
     "dist/**/*.js",
+    "docs/.vitepress/**/*.ts",
+    "docs/**/*.md",
     "README.md",
     "LICENSE"
   ],
@@ -29,6 +31,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "clean": "rm -rf dist coverage",
+    "docs:build": "vitepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs",
     "format": "oxfmt . --write",
     "format:check": "oxfmt . --check",
     "lint": "oxlint . && node scripts/check-no-let.mjs",
