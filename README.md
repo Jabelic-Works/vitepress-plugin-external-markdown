@@ -7,6 +7,22 @@ This plugin copies external Markdown into a generated directory so VitePress can
 route it as normal pages. The same resolver drives generated files, sidebar
 items, nav items, and item metadata.
 
+## Documentation
+
+- English: [Getting started](docs/index.md), [Examples](docs/examples.md)
+- 日本語: [はじめに](docs/ja/index.md), [例](docs/ja/examples.md)
+
+Run the VitePress docs locally:
+
+```sh
+pnpm docs:dev
+```
+
+The documentation site is built with VitePress and deployed to GitHub Pages from
+the `main` branch:
+
+https://jabelic-works.github.io/vitepress-plugin-external-markdown/
+
 ## Install
 
 ```sh
@@ -82,7 +98,7 @@ docs/
 
 Add the generated directory to `.gitignore`:
 
-```gitignore
+```txt
 docs/src/generated/
 ```
 
