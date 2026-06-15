@@ -22,44 +22,11 @@ export function collectExternalMarkdown(
   normalized: NormalizedOptions,
   logger: Logger,
 ): MaterializedExternalMarkdownItem[] {
-  const items: MaterializedExternalMarkdownItem[] = []
-  let matchedCount = 0
-
-  for (const normalizedSource of normalized.sources) {
-    const { source, baseDirAbs } = normalizedSource
-    const filePaths = fg
-      .sync(source.pattern, {
-        cwd: baseDirAbs,
-        absolute: true,
-        onlyFiles: true,
-        unique: true,
-      })
-      .filter((filePath) => path.extname(filePath).toLowerCase() === '.md')
-      .sort(compareStrings)
-
-    if (filePaths.length === 0) {
-      logger.warn(`No external Markdown files matched source: ${source.name ?? source.baseDir}`)
-    }
-
-    matchedCount += filePaths.length
-
-    for (const filePath of filePaths) {
-      const parsed = readMarkdownFile(filePath, normalized.root, logger)
-      if (!parsed) {
-        continue
-      }
-
-      const relativePath = toPosix(path.relative(baseDirAbs, filePath))
-      const ctx = createContext(source, filePath, relativePath, parsed)
-      const resolved = normalized.resolveMarkdown?.(ctx) ?? defaultResolveMarkdown(ctx)
-
-      if (resolved === false) {
-        continue
-      }
-
-      items.push(createItem(normalized, ctx, parsed, resolved))
-    }
-  }
+  const collectedSources = normalized.sources.map((normalizedSource) =>
+    collectSourceMarkdown(normalized, logger, normalizedSource),
+  )
+  const matchedCount = collectedSources.reduce((count, sourceResult) => count + sourceResult.matchedCount, 0)
+  const items = collectedSources.flatMap((sourceResult) => sourceResult.items)
 
   if (matchedCount === 0) {
     logger.warn('No external Markdown files matched any configured source.')
@@ -69,6 +36,56 @@ export function collectExternalMarkdown(
   assertNoDuplicateOutputPaths(normalized, items)
 
   return items.sort(compareItems)
+}
+
+function collectSourceMarkdown(
+  normalized: NormalizedOptions,
+  logger: Logger,
+  normalizedSource: NormalizedOptions['sources'][number],
+): { items: MaterializedExternalMarkdownItem[]; matchedCount: number } {
+  const { source, baseDirAbs } = normalizedSource
+  const filePaths = fg
+    .sync(source.pattern, {
+      cwd: baseDirAbs,
+      absolute: true,
+      onlyFiles: true,
+      unique: true,
+    })
+    .filter((filePath) => path.extname(filePath).toLowerCase() === '.md')
+    .sort(compareStrings)
+
+  if (filePaths.length === 0) {
+    logger.warn(`No external Markdown files matched source: ${source.name ?? source.baseDir}`)
+  }
+
+  return {
+    items: filePaths.flatMap((filePath) => collectFileMarkdown(normalized, normalizedSource, logger, filePath)),
+    matchedCount: filePaths.length,
+  }
+}
+
+function collectFileMarkdown(
+  normalized: NormalizedOptions,
+  normalizedSource: NormalizedOptions['sources'][number],
+  logger: Logger,
+  filePath: string,
+): MaterializedExternalMarkdownItem[] {
+  const { source, baseDirAbs } = normalizedSource
+  const parsed = readMarkdownFile(filePath, normalized.root, logger)
+
+  if (!parsed) {
+    return []
+  }
+
+  const relativePath = toPosix(path.relative(baseDirAbs, filePath))
+  const ctx = createContext(source, filePath, relativePath, parsed)
+  const resolved = normalized.resolveMarkdown?.(ctx) ?? defaultResolveMarkdown(ctx)
+
+  if (resolved === false) {
+    return []
+  }
+
+  return [createItem(normalized, ctx, parsed, resolved)]
 }
 
 export function toPublicItem(item: MaterializedExternalMarkdownItem): ExternalMarkdownItem {

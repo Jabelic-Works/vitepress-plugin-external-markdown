@@ -13,7 +13,7 @@ export function watchSources(server: ViteDevServer, options: ExternalMarkdownOpt
 
   server.watcher.add(watchedDirs)
 
-  let timer: NodeJS.Timeout | undefined
+  const debounce: { timer?: NodeJS.Timeout } = {}
   const regenerate = (filePath: string) => {
     const absoluteFilePath = path.resolve(filePath)
 
@@ -25,11 +25,11 @@ export function watchSources(server: ViteDevServer, options: ExternalMarkdownOpt
       return
     }
 
-    if (timer) {
-      clearTimeout(timer)
+    if (debounce.timer) {
+      clearTimeout(debounce.timer)
     }
 
-    timer = setTimeout(() => {
+    debounce.timer = setTimeout(() => {
       try {
         materializeExternalMarkdown(options, {
           root,

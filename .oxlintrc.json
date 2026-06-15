@@ -14,6 +14,7 @@
     "eslint/max-statements": "off",
     "eslint/no-magic-numbers": "off",
     "eslint/no-ternary": "off",
+    "eslint/prefer-const": "error",
     "eslint/require-unicode-regexp": "off",
     "unicorn/no-array-sort": "off",
     "vitest/no-conditional-in-test": "off",

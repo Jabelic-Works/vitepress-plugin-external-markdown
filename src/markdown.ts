@@ -11,21 +11,10 @@ import type {
 } from './types.js'
 
 export function readMarkdownFile(filePath: string, root: string, logger: Logger): ParsedMarkdown | undefined {
-  let raw: string
+  const raw = readSourceMarkdown(filePath, root, logger)
 
-  try {
-    raw = readFileSync(filePath, 'utf8')
-  } catch (error) {
-    const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : undefined
-
-    if (code === 'ENOENT') {
-      logger.warn(`External Markdown source disappeared during generation: ${displayPath(root, filePath)}`)
-      return undefined
-    }
-
-    throw new Error(`Failed to read external Markdown source: ${displayPath(root, filePath)}`, {
-      cause: error,
-    })
+  if (!raw) {
+    return undefined
   }
 
   try {
@@ -44,6 +33,23 @@ export function readMarkdownFile(filePath: string, root: string, logger: Logger)
     return {
       content: stripRawFrontmatter(raw),
     }
+  }
+}
+
+function readSourceMarkdown(filePath: string, root: string, logger: Logger): string | undefined {
+  try {
+    return readFileSync(filePath, 'utf8')
+  } catch (error) {
+    const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : undefined
+
+    if (code === 'ENOENT') {
+      logger.warn(`External Markdown source disappeared during generation: ${displayPath(root, filePath)}`)
+      return undefined
+    }
+
+    throw new Error(`Failed to read external Markdown source: ${displayPath(root, filePath)}`, {
+      cause: error,
+    })
   }
 }
 
@@ -122,10 +128,10 @@ function stripRawFrontmatter(raw: string): string {
 
   const lines = raw.split(/\r?\n/)
 
-  for (let index = 1; index < lines.length; index += 1) {
-    if (lines[index] === '---' || lines[index] === '...') {
-      return lines.slice(index + 1).join('\n')
-    }
+  const closingIndex = lines.findIndex((line, index) => index > 0 && (line === '---' || line === '...'))
+
+  if (closingIndex > 0) {
+    return lines.slice(closingIndex + 1).join('\n')
   }
 
   return raw

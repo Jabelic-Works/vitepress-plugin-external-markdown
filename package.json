@@ -31,8 +31,8 @@
     "clean": "rm -rf dist coverage",
     "format": "oxfmt . --write",
     "format:check": "oxfmt . --check",
-    "lint": "oxlint .",
-    "lint:strict": "oxlint . --deny-warnings",
+    "lint": "oxlint . && node scripts/check-no-let.mjs",
+    "lint:strict": "oxlint . --deny-warnings && node scripts/check-no-let.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

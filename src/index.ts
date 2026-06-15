@@ -24,20 +24,18 @@ export type {
 } from './types.js'
 
 export function externalMarkdown(options: ExternalMarkdownOptions): Plugin {
-  let root: string | undefined
-
   return {
     name: PLUGIN_NAME,
     enforce: 'pre',
     configResolved(config: ResolvedConfig) {
-      root = resolveRoot(options, config.root)
+      const root = resolveRoot(options, config.root)
       materializeExternalMarkdown(options, {
         root,
         logger: toLogger(config),
       })
     },
     configureServer(server: ViteDevServer) {
-      const resolvedRoot = root ?? resolveRoot(options, server.config.root)
+      const resolvedRoot = resolveRoot(options, server.config.root)
       watchSources(server, options, resolvedRoot)
     },
   }
