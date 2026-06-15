@@ -1,5 +1,7 @@
 # vitepress-plugin-external-markdown
 
+[![npm version](https://img.shields.io/npm/v/vitepress-plugin-external-markdown.svg)](https://www.npmjs.com/package/vitepress-plugin-external-markdown)
+
 Materialize Markdown files outside a VitePress `srcDir` as generated Markdown
 pages inside `srcDir`.
 
@@ -28,6 +30,8 @@ https://jabelic-works.github.io/vitepress-plugin-external-markdown/
 ```sh
 pnpm add -D vitepress-plugin-external-markdown
 ```
+
+Package: https://www.npmjs.com/package/vitepress-plugin-external-markdown
 
 ## Usage
 
