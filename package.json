@@ -1,0 +1,60 @@
+{
+  "name": "vitepress-plugin-external-markdown",
+  "version": "0.1.0",
+  "description": "Materialize Markdown files outside a VitePress srcDir as generated VitePress pages.",
+  "homepage": "https://github.com/Jabelic-Works/vitepress-plugin-external-markdown#readme",
+  "bugs": {
+    "url": "https://github.com/Jabelic-Works/vitepress-plugin-external-markdown/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jabelic-Works/vitepress-plugin-external-markdown.git"
+  },
+  "files": [
+    "dist/**/*.d.ts",
+    "dist/**/*.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist coverage",
+    "format": "oxfmt . --write",
+    "format:check": "oxfmt . --check",
+    "lint": "oxlint .",
+    "lint:strict": "oxlint . --deny-warnings",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "vitepress": "^1.6.0",
+    "vitest": "^4.0.0"
+  },
+  "peerDependencies": {
+    "vite": ">=5.0.0",
+    "vitepress": ">=1.0.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "packageManager": "pnpm@11.6.0"
+}

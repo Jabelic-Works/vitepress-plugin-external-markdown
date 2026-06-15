@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["oxc", "typescript", "unicorn", "vitest", "promise", "node"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error",
+    "pedantic": "warn"
+  },
+  "rules": {
+    "eslint/func-style": "off",
+    "eslint/init-declarations": "off",
+    "eslint/max-lines-per-function": "off",
+    "eslint/max-statements": "off",
+    "eslint/no-magic-numbers": "off",
+    "eslint/no-ternary": "off",
+    "eslint/require-unicode-regexp": "off",
+    "unicorn/no-array-sort": "off",
+    "vitest/no-conditional-in-test": "off",
+    "vitest/no-importing-vitest-globals": "off",
+    "vitest/prefer-describe-function-title": "off",
+    "vitest/prefer-expect-assertions": "off"
+  },
+  "ignorePatterns": ["dist/**", "coverage/**", "node_modules/**", "*.tgz"]
+}
