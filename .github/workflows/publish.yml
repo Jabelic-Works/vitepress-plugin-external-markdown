@@ -62,5 +62,5 @@ jobs:
       - name: Check package contents
         run: npm pack --dry-run
 
-      - name: Publish or stage package
-        run: node scripts/publish-release.mjs
+      - name: Stage package
+        run: npm stage publish
