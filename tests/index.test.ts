@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import {
+  externalMarkdown,
   getExternalMarkdownItems,
   getExternalMarkdownNav,
   getExternalMarkdownSidebar,
@@ -46,6 +47,7 @@ describe('vitepress-plugin-external-markdown', () => {
     write(root, 'packages/foo/README.md', '---\ntitle: Source title\naside: false\n---\n# Source title\nBody\n')
 
     const options: ExternalMarkdownOptions = {
+      root: path.join(root, 'docs'),
       sources: [{ baseDir: '../packages', pattern: '**/*.md' }],
       outDir: 'generated/external',
       routeBase: '/generated/external/',
@@ -77,6 +79,30 @@ describe('vitepress-plugin-external-markdown', () => {
       Body
       "
     `)
+  })
+
+  it('materializes generated Markdown when the Vite plugin is created', () => {
+    const root = createFixture()
+    mkdirp(root, 'docs/src')
+    write(root, 'packages/foo/README.md', '# Foo\n')
+
+    const options: ExternalMarkdownOptions = {
+      root: path.join(root, 'docs'),
+      sources: [{ baseDir: '../packages', pattern: '**/*.md' }],
+      outDir: 'generated/external',
+      routeBase: '/generated/external/',
+      resolveMarkdown() {
+        return {
+          slug: 'foo',
+        }
+      },
+    }
+
+    expect(existsSync(path.join(root, 'docs/src/generated/external/foo.md'))).toBe(false)
+
+    externalMarkdown(options)
+
+    expect(existsSync(path.join(root, 'docs/src/generated/external/foo.md'))).toBe(true)
   })
 
   it('refuses to clean a non-empty unmanaged output directory', () => {

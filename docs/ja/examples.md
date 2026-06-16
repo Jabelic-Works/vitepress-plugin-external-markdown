@@ -2,6 +2,8 @@
 
 各例は `src/generated/...` 配下に Markdown を生成します。生成された Markdown は
 commit せず、生成 directory を `.gitignore` に追加してください。
+deploy 時は `vitepress build` を実行し、site build 前に plugin が生成物を再作成
+できるようにしてください。
 
 ```txt
 docs/src/generated/

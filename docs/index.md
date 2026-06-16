@@ -40,6 +40,10 @@ Add the generated directory to `.gitignore`.
 docs/src/generated/
 ```
 
+Generated Markdown is a build artifact. Your deploy pipeline should run
+`vitepress build` with this plugin enabled so generated pages are recreated
+before the site is built.
+
 ## VitePress config
 
 Use one shared `externalMarkdownOptions` object for both the Vite plugin and

@@ -24,6 +24,11 @@ export type {
 } from './types.js'
 
 export function externalMarkdown(options: ExternalMarkdownOptions): Plugin {
+  materializeExternalMarkdown(options, {
+    root: resolveRoot(options, process.cwd()),
+    logger: defaultLogger(),
+  })
+
   return {
     name: PLUGIN_NAME,
     enforce: 'pre',

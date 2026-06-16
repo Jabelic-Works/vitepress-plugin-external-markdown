@@ -40,6 +40,10 @@ repo/
 docs/src/generated/
 ```
 
+生成された Markdown は build artifact です。deploy pipeline では、この plugin を
+有効にした状態で `vitepress build` を実行し、site build 前に generated page を
+再生成してください。
+
 ## VitePress config
 
 `externalMarkdownOptions` を 1 つだけ定義し、Vite plugin と sidebar helper の
