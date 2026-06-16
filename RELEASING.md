@@ -4,11 +4,6 @@ Package releases are published to npm from GitHub Releases using npm Trusted
 Publishing. The workflow uses Node.js 24 and GitHub OIDC, so it does not require
 an `NPM_TOKEN`.
 
-The workflow publishes the first version directly with `npm publish`, because
-npm cannot stage a package that does not exist yet. After the package exists on
-npm, the same workflow uses `npm stage publish` so every release needs a
-maintainer approval step before it goes live.
-
 ## Publish Steps
 
 1. Update `package.json` version.
