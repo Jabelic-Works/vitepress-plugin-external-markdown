@@ -29,7 +29,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
           package-manager-cache: false
 
       - name: Update npm CLI
@@ -37,6 +36,11 @@ jobs:
 
       - name: Show npm version
         run: npm --version
+
+      - name: Verify OIDC environment
+        run: |
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_URL:-}"
+          test -n "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -69,4 +73,7 @@ jobs:
         run: npm pack --dry-run
 
       - name: Stage package
+        env:
+          NODE_AUTH_TOKEN: ''
+          NPM_CONFIG_USERCONFIG: ''
         run: npm stage publish
