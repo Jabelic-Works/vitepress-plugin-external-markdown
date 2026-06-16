@@ -88,6 +88,46 @@ const externalMarkdownOptions = {
 }
 ```
 
+## 同梱 asset を copy する
+
+取り込む Markdown が近くの画像や static file を参照している場合は
+`copyAssets` を使います。asset copy は Markdown 生成とは独立して実行され、
+Markdown 内の link は書き換えません。
+
+```ts
+const externalMarkdownOptions = {
+  root: new URL('..', import.meta.url).pathname,
+  srcDir: 'src',
+  sources: [
+    {
+      baseDir: '../docs-content',
+      pattern: '**/*.md',
+    },
+  ],
+  outDir: 'generated/docs',
+  routeBase: '/generated/docs/',
+  copyAssets: [
+    {
+      baseDir: '../docs-content',
+      pattern: 'images/**/*',
+      outDir: 'generated/docs',
+    },
+    {
+      baseDir: '../docs-content',
+      pattern: 'public/**/*',
+      outDir: '.',
+    },
+  ],
+}
+```
+
+この設定では、以下のように materialize されます。
+
+```txt
+docs/src/generated/docs/images/example.png
+docs/src/public/logo.png
+```
+
 ## top-level nav にも出す
 
 top-level navigation に出したい file だけ `nav: true` を返し、

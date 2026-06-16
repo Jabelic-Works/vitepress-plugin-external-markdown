@@ -14,6 +14,7 @@ import type {
 } from './types.js'
 
 export type {
+  ExternalAssetCopy,
   ExternalMarkdownContext,
   ExternalMarkdownItem,
   ExternalMarkdownNavItem,

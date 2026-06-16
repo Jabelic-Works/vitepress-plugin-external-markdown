@@ -35,6 +35,12 @@ export type ExternalMarkdownOptions = {
   clean?: boolean
 
   /**
+   * External asset copy definitions. Assets are copied independently from
+   * Markdown generation and links are not rewritten.
+   */
+  copyAssets?: ExternalAssetCopy[]
+
+  /**
    * Convert a discovered Markdown file into generated page metadata.
    */
   resolveMarkdown?: (ctx: ExternalMarkdownContext) => ResolvedExternalMarkdown | false
@@ -55,6 +61,30 @@ export type ExternalMarkdownSource = {
    * Optional source name for grouping and debugging.
    */
   name?: string
+}
+
+export type ExternalAssetCopy = {
+  /**
+   * Asset base directory relative to the VitePress project root.
+   */
+  baseDir: string
+
+  /**
+   * Glob pattern or patterns under baseDir.
+   */
+  pattern: string | string[]
+
+  /**
+   * Asset output directory relative to srcDir.
+   */
+  outDir: string
+
+  /**
+   * Whether to clean the managed asset output before copying.
+   *
+   * @default true
+   */
+  clean?: boolean
 }
 
 export type ExternalMarkdownContext = {
@@ -117,12 +147,20 @@ export type NormalizedOptions = {
   routeBase: string
   clean: boolean
   sources: NormalizedSource[]
+  copyAssets: NormalizedAssetCopy[]
   resolveMarkdown?: (ctx: ExternalMarkdownContext) => ResolvedExternalMarkdown | false
 }
 
 export type NormalizedSource = {
   source: ExternalMarkdownSource
   baseDirAbs: string
+}
+
+export type NormalizedAssetCopy = {
+  asset: ExternalAssetCopy
+  baseDirAbs: string
+  outDirAbs: string
+  clean: boolean
 }
 
 export type ParsedMarkdown = {
@@ -133,4 +171,12 @@ export type ParsedMarkdown = {
 export type MaterializedExternalMarkdownItem = ExternalMarkdownItem & {
   outputPath: string
   generatedContent: string
+}
+
+export type MaterializedExternalAssetItem = {
+  filePath: string
+  relativePath: string
+  outputPath: string
+  managedDirAbs: string
+  clean: boolean
 }

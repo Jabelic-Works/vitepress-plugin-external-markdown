@@ -9,7 +9,10 @@ import type { ExternalMarkdownOptions, NormalizedOptions } from './types.js'
 
 export function watchSources(server: ViteDevServer, options: ExternalMarkdownOptions, root: string): void {
   const normalized = normalizeOptions(options, root)
-  const watchedDirs = normalized.sources.map((source) => source.baseDirAbs)
+  const watchedDirs = [
+    ...normalized.sources.map((source) => source.baseDirAbs),
+    ...normalized.copyAssets.map((asset) => asset.baseDirAbs),
+  ]
 
   server.watcher.add(watchedDirs)
 
@@ -17,7 +20,7 @@ export function watchSources(server: ViteDevServer, options: ExternalMarkdownOpt
   const regenerate = (filePath: string) => {
     const absoluteFilePath = path.resolve(filePath)
 
-    if (isInside(absoluteFilePath, normalized.outDirAbs)) {
+    if (isManagedOutputPath(absoluteFilePath, normalized)) {
       return
     }
 
@@ -54,7 +57,20 @@ function isRelevantWatchPath(filePath: string, normalized: NormalizedOptions): b
     return normalized.sources.some((source) => isInside(filePath, source.baseDirAbs))
   }
 
-  return normalized.sources.some(
-    (source) => isInside(filePath, source.baseDirAbs) && existsSync(filePath) && statSync(filePath).isDirectory(),
+  if (normalized.copyAssets.some((asset) => isInside(filePath, asset.baseDirAbs))) {
+    return true
+  }
+
+  return normalized.sources.some((source) => {
+    return isInside(filePath, source.baseDirAbs) && existsSync(filePath) && statSync(filePath).isDirectory()
+  })
+}
+
+function isManagedOutputPath(filePath: string, normalized: NormalizedOptions): boolean {
+  return (
+    isInside(filePath, normalized.outDirAbs) ||
+    normalized.copyAssets.some((asset) => {
+      return isInside(filePath, asset.outDirAbs) || filePath === asset.outDirAbs
+    })
   )
 }

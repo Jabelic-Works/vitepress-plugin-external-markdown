@@ -22,6 +22,10 @@ export function collectExternalMarkdown(
   normalized: NormalizedOptions,
   logger: Logger,
 ): MaterializedExternalMarkdownItem[] {
+  if (normalized.sources.length === 0) {
+    return []
+  }
+
   const collectedSources = normalized.sources.map((normalizedSource) =>
     collectSourceMarkdown(normalized, logger, normalizedSource),
   )

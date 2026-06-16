@@ -90,6 +90,46 @@ const externalMarkdownOptions = {
 }
 ```
 
+## Copy colocated assets
+
+Use `copyAssets` when imported Markdown refers to local images or static files.
+Assets are copied independently from Markdown generation, and Markdown links are
+not rewritten.
+
+```ts
+const externalMarkdownOptions = {
+  root: new URL('..', import.meta.url).pathname,
+  srcDir: 'src',
+  sources: [
+    {
+      baseDir: '../docs-content',
+      pattern: '**/*.md',
+    },
+  ],
+  outDir: 'generated/docs',
+  routeBase: '/generated/docs/',
+  copyAssets: [
+    {
+      baseDir: '../docs-content',
+      pattern: 'images/**/*',
+      outDir: 'generated/docs',
+    },
+    {
+      baseDir: '../docs-content',
+      pattern: 'public/**/*',
+      outDir: '.',
+    },
+  ],
+}
+```
+
+With this configuration, files are materialized like this.
+
+```txt
+docs/src/generated/docs/images/example.png
+docs/src/public/logo.png
+```
+
 ## Add top-level nav items
 
 Return `nav: true` for files that should also appear in top-level navigation,
