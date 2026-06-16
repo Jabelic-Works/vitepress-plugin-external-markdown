@@ -11,17 +11,6 @@ maintainer approval step before it goes live.
 
 ## npm Trusted Publisher
 
-Configure this package on npmjs.com with the following trusted publisher fields.
-
-| Field                | Initial package publish              | After the package exists             |
-| -------------------- | ------------------------------------ | ------------------------------------ |
-| Publisher            | GitHub Actions                       | GitHub Actions                       |
-| Organization or user | `Jabelic-Works`                      | `Jabelic-Works`                      |
-| Repository           | `vitepress-plugin-external-markdown` | `vitepress-plugin-external-markdown` |
-| Workflow filename    | `publish.yml`                        | `publish.yml`                        |
-| Allowed action       | `npm publish`                        | `npm stage publish`                  |
-| Environment name     | Leave blank                          | Leave blank                          |
-
 After the initial package publish, update the trusted publisher to stage-only
 permissions and set package publishing access to require 2FA and disallow
 tokens.
