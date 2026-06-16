@@ -1,11 +1,72 @@
 import { defineConfig } from 'vitepress'
+import {
+  externalMarkdown,
+  getExternalMarkdownSidebar,
+  type ExternalMarkdownContext,
+  type ExternalMarkdownOptions,
+  type ResolvedExternalMarkdown,
+} from '../../src/index.js'
+
+function resolveDocsMarkdown(routeBase: string) {
+  return (ctx: ExternalMarkdownContext): ResolvedExternalMarkdown => {
+    const slug = ctx.relativePath.replace(/\.md$/u, '')
+    const isIndex = slug === 'index'
+
+    return {
+      slug,
+      fileName: `${slug}.md`,
+      link: isIndex ? routeBase : `${routeBase}${slug}`,
+      title: ctx.title,
+      text: ctx.title,
+      order: isIndex ? 0 : ctx.relativePath,
+      sidebar: true,
+      frontmatter: {
+        editLink: false,
+      },
+    }
+  }
+}
+
+const englishDocsOptions: ExternalMarkdownOptions = {
+  root: 'docs',
+  srcDir: 'src',
+  sources: [
+    {
+      name: 'english-docs',
+      baseDir: '../docs-content/en',
+      pattern: '*.md',
+    },
+  ],
+  outDir: 'guide',
+  routeBase: '/guide/',
+  resolveMarkdown: resolveDocsMarkdown('/guide/'),
+}
+
+const japaneseDocsOptions: ExternalMarkdownOptions = {
+  root: 'docs',
+  srcDir: 'src',
+  sources: [
+    {
+      name: 'japanese-docs',
+      baseDir: '../docs-content/ja',
+      pattern: '*.md',
+    },
+  ],
+  outDir: 'ja',
+  routeBase: '/ja/',
+  resolveMarkdown: resolveDocsMarkdown('/ja/'),
+}
 
 export default defineConfig({
+  srcDir: 'src',
   title: 'vitepress-plugin-external-markdown',
   description: 'Materialize Markdown files outside a VitePress srcDir as generated pages.',
   base: '/vitepress-plugin-external-markdown/',
   cleanUrls: true,
   lastUpdated: true,
+  vite: {
+    plugins: [externalMarkdown(englishDocsOptions), externalMarkdown(japaneseDocsOptions)],
+  },
   themeConfig: {
     search: {
       provider: 'local',
@@ -23,16 +84,13 @@ export default defineConfig({
       lang: 'en-US',
       themeConfig: {
         nav: [
-          { text: 'Guide', link: '/' },
-          { text: 'Examples', link: '/examples' },
+          { text: 'Guide', link: '/guide/' },
+          { text: 'Examples', link: '/guide/examples' },
         ],
         sidebar: [
           {
             text: 'Guide',
-            items: [
-              { text: 'Getting started', link: '/' },
-              { text: 'Examples', link: '/examples' },
-            ],
+            items: getExternalMarkdownSidebar(englishDocsOptions),
           },
         ],
       },
@@ -49,10 +107,7 @@ export default defineConfig({
         sidebar: [
           {
             text: 'ガイド',
-            items: [
-              { text: 'はじめに', link: '/ja/' },
-              { text: '例', link: '/ja/examples' },
-            ],
+            items: getExternalMarkdownSidebar(japaneseDocsOptions),
           },
         ],
         outline: {

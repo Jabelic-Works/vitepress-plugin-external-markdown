@@ -1,9 +1,9 @@
-# はじめに
+# Getting started
 
-このページでは、もっとも一般的な構成を例にします。VitePress site は
-`docs/` にあり、package の Markdown は `packages/` にある monorepo です。
+This guide shows the most common setup: a monorepo with a VitePress site in
+`docs/` and package Markdown files in `packages/`.
 
-## repository 構成例
+## Example repository layout
 
 ```txt
 repo/
@@ -20,8 +20,8 @@ repo/
       README.md
 ```
 
-plugin は `packages/` 配下の Markdown を読み取り、`docs/src/generated/packages/`
-配下に VitePress page として生成します。
+The plugin reads Markdown under `packages/` and writes generated pages under
+`docs/src/generated/packages/`.
 
 ```txt
 repo/
@@ -34,17 +34,20 @@ repo/
           editor.md
 ```
 
-生成 directory は `.gitignore` に追加してください。
+Add the generated directory to `.gitignore`.
 
 ```txt
 docs/src/generated/
 ```
 
+Generated Markdown is a build artifact. Your deploy pipeline should run
+`vitepress build` with this plugin enabled so generated pages are recreated
+before the site is built.
+
 ## VitePress config
 
-`externalMarkdownOptions` を 1 つだけ定義し、Vite plugin と sidebar helper の
-両方で使います。これにより、生成される Markdown と navigation metadata が同じ
-resolver から作られます。
+Use one shared `externalMarkdownOptions` object for both the Vite plugin and
+the sidebar helper. This keeps generated files and navigation metadata in sync.
 
 ```ts
 import { defineConfig } from 'vitepress'
@@ -100,9 +103,9 @@ export default defineConfig({
 })
 ```
 
-## 生成される route
+## Route result
 
-上の構成では、以下のような route になります。
+With the layout above, generated routes look like this.
 
 | Source file                  | Generated file                                  | Route                                |
 | ---------------------------- | ----------------------------------------------- | ------------------------------------ |
@@ -110,14 +113,14 @@ export default defineConfig({
 | `packages/core/CHANGELOG.md` | `docs/src/generated/packages/core/changelog.md` | `/generated/packages/core/changelog` |
 | `packages/editor/README.md`  | `docs/src/generated/packages/editor.md`         | `/generated/packages/editor`         |
 
-## `root` を指定する理由
+## Why `root` is set
 
-config が `docs/.vitepress/config.ts` にある場合、次の式は VitePress project
-root である `docs/` を指します。
+When the config lives at `docs/.vitepress/config.ts`, this expression points to
+the VitePress project root, `docs/`.
 
 ```ts
 root: new URL('..', import.meta.url).pathname
 ```
 
-これにより、`vitepress dev docs` のように monorepo root から command を実行しても、
-helper が同じ root を使って deterministic に metadata を生成できます。
+This makes helper calls deterministic even when commands are run from the
+monorepo root, for example `vitepress dev docs`.

@@ -1,7 +1,7 @@
 export type ExternalMarkdownOptions = {
   /**
-   * VitePress project root. Helpers default to process.cwd(); the Vite plugin
-   * defaults to Vite's resolved root.
+   * VitePress project root. Defaults to process.cwd(). Set this when running
+   * VitePress commands from outside the VitePress project root.
    */
   root?: string
 

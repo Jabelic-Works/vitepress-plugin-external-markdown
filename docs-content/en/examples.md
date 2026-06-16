@@ -3,6 +3,8 @@
 All examples write generated Markdown under `src/generated/...`. Add that
 generated directory to `.gitignore`; generated Markdown files are not meant to
 be committed.
+Run `vitepress build` during deployment so the plugin recreates them before the
+site is built.
 
 ```txt
 docs/src/generated/

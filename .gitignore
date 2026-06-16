@@ -1,5 +1,8 @@
 coverage/
 dist/
 docs/.vitepress/dist/
+docs/src/generated/
+docs/src/guide/
+docs/src/ja/
 node_modules/
 *.tgz

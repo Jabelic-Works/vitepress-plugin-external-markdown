@@ -106,6 +106,10 @@ Add the generated directory to `.gitignore`:
 docs/src/generated/
 ```
 
+Generated Markdown is a build artifact. Deployments should run
+`vitepress build` with this plugin enabled so the files are regenerated before
+VitePress builds the site.
+
 The plugin writes a marker file named
 `.vitepress-plugin-external-markdown`. Existing non-empty directories without
 that marker are not cleaned.
