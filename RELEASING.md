@@ -9,12 +9,6 @@ npm cannot stage a package that does not exist yet. After the package exists on
 npm, the same workflow uses `npm stage publish` so every release needs a
 maintainer approval step before it goes live.
 
-## npm Trusted Publisher
-
-After the initial package publish, update the trusted publisher to stage-only
-permissions and set package publishing access to require 2FA and disallow
-tokens.
-
 ## Publish Steps
 
 1. Update `package.json` version.
