@@ -1,5 +1,12 @@
 # 例
 
+各例は `src/generated/...` 配下に Markdown を生成します。生成された Markdown は
+commit せず、生成 directory を `.gitignore` に追加してください。
+
+```txt
+docs/src/generated/
+```
+
 ## package README だけを取り込む
 
 `packages/*/README.md` を、それぞれ 1 つの VitePress page として生成する例です。

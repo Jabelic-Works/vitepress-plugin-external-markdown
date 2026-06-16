@@ -1,5 +1,13 @@
 # Examples
 
+All examples write generated Markdown under `src/generated/...`. Add that
+generated directory to `.gitignore`; generated Markdown files are not meant to
+be committed.
+
+```txt
+docs/src/generated/
+```
+
 ## Import package README files only
 
 This setup turns each `packages/*/README.md` into one generated VitePress page.
