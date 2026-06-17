@@ -21,11 +21,21 @@ describe('VitePress build integration', () => {
     const root = createFixture()
     const docsRoot = path.join(root, 'docs')
     const generatedMarkdownPath = path.join(docsRoot, 'src/generated/packages/core.md')
+    const generatedAssetPath = path.join(docsRoot, 'src/generated/packages/assets/core.svg')
     const outputHtmlPath = path.join(docsRoot, '.vitepress/dist/generated/packages/core.html')
 
     mkdirp(root, 'docs/src')
     symlinkSync(nodeModulesPath, path.join(root, 'node_modules'), 'dir')
-    write(root, 'external/packages/core/README.md', '# Core Package\n\nExternal body.\n')
+    write(
+      root,
+      'external/packages/core/README.md',
+      '# Core Package\n\nExternal body.\n\n![Core diagram](./assets/core.svg)\n',
+    )
+    write(
+      root,
+      'external/packages/core/assets/core.svg',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60"><title>Core diagram</title><rect width="120" height="60" fill="#dcfce7"/></svg>\n',
+    )
     write(root, 'docs/src/index.md', '# Home\n')
     write(
       root,
@@ -44,6 +54,13 @@ const externalMarkdownOptions = {
   ],
   outDir: 'generated/packages',
   routeBase: '/generated/packages/',
+  copyAssets: [
+    {
+      baseDir: '../external/packages/core',
+      pattern: 'assets/**/*',
+      outDir: 'generated/packages',
+    },
+  ],
   resolveMarkdown(ctx) {
     const slug = ctx.relativePath
       .replace(/\\/README\\.md$/u, '')
@@ -94,10 +111,12 @@ export default {
 
     expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0)
     expect(existsSync(generatedMarkdownPath)).toBe(true)
+    expect(existsSync(generatedAssetPath)).toBe(true)
     expect(existsSync(outputHtmlPath)).toBe(true)
 
     const html = readFileSync(outputHtmlPath, 'utf8')
     expect(html).toContain('Core Package')
     expect(html).toContain('External body.')
+    expect(html).toContain('Core diagram')
   }, 20_000)
 })

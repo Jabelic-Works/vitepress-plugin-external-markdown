@@ -130,6 +130,11 @@ docs/src/generated/docs/images/example.png
 docs/src/public/logo.png
 ```
 
+This page is generated from `docs-content/en/examples.md`, and the image below
+is copied from `docs-content/en/assets/` by the same plugin configuration.
+
+![Copied asset flow](./assets/copied-asset-flow.svg)
+
 ## Add top-level nav items
 
 Return `nav: true` for files that should also appear in top-level navigation,
