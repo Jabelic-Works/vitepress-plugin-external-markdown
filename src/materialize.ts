@@ -59,7 +59,9 @@ export function materializeExternalMarkdown(
 }
 
 function collectExternalAssets(normalized: NormalizedOptions, logger: Logger): MaterializedExternalAssetItem[] {
-  return normalized.copyAssets.flatMap((asset) => collectAssetFiles(normalized, logger, asset)).sort(compareAssets)
+  const assets = normalized.copyAssets.flatMap((asset) => collectAssetFiles(normalized, logger, asset))
+  assertNoDuplicateAssetOutputPaths(normalized, assets)
+  return assets.sort(compareAssets)
 }
 
 function collectAssetFiles(
@@ -232,4 +234,32 @@ function prepareManagedDirectory(normalized: NormalizedOptions, managedDirectory
 
 function compareAssets(a: MaterializedExternalAssetItem, b: MaterializedExternalAssetItem): number {
   return compareStrings(a.outputPath, b.outputPath)
+}
+
+function assertNoDuplicateAssetOutputPaths(
+  normalized: NormalizedOptions,
+  assets: MaterializedExternalAssetItem[],
+): void {
+  const byOutputPath = new Map<string, MaterializedExternalAssetItem[]>()
+
+  for (const asset of assets) {
+    const current = byOutputPath.get(asset.outputPath) ?? []
+    current.push(asset)
+    byOutputPath.set(asset.outputPath, current)
+  }
+
+  const messages = [...byOutputPath.entries()]
+    .filter(([, outputAssets]) => outputAssets.length > 1)
+    .map(([outputPath, outputAssets]) => {
+      const files = outputAssets
+        .map((asset) => displayPath(normalized.root, asset.filePath))
+        .sort(compareStrings)
+        .map((filePath) => `- ${filePath}`)
+        .join('\n')
+      return `Duplicate external asset output file: ${displayPath(normalized.root, outputPath)}\n${files}`
+    })
+
+  if (messages.length > 0) {
+    throw new Error(messages.join('\n\n'))
+  }
 }

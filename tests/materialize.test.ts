@@ -185,6 +185,46 @@ describe('materializeExternalMarkdown', () => {
     expect(readFileSync(path.join(root, 'docs/src/generated/assets/manual.png'), 'utf8')).toBe('manual')
   })
 
+  it('reports duplicate asset output file paths before copying', () => {
+    const root = createFixture()
+    mkdirp(root, 'docs/src')
+    write(root, 'packages/foo/README.md', '# Foo\n')
+    write(root, 'packages/foo/images/logo.png', 'foo')
+    write(root, 'packages/bar/images/logo.png', 'bar')
+
+    expect(() =>
+      materializeExternalMarkdown(
+        {
+          root: path.join(root, 'docs'),
+          sources: [{ baseDir: '../packages', pattern: '**/*.md' }],
+          outDir: 'generated/external',
+          routeBase: '/generated/external/',
+          copyAssets: [
+            {
+              baseDir: '../packages/foo',
+              pattern: 'images/**/*',
+              outDir: 'generated/assets',
+            },
+            {
+              baseDir: '../packages/bar',
+              pattern: 'images/**/*',
+              outDir: 'generated/assets',
+            },
+          ],
+          resolveMarkdown: (ctx) => ({ slug: ctx.relativePath.replace(/\/README\.md$/u, '') }),
+        },
+        {
+          root: path.join(root, 'docs'),
+          logger: createLogger(),
+        },
+      ),
+    ).toThrow(
+      /Duplicate external asset output file: src\/generated\/assets\/images\/logo\.png\n- \.\.\/packages\/bar\/images\/logo\.png\n- \.\.\/packages\/foo\/images\/logo\.png/,
+    )
+
+    expect(existsSync(path.join(root, 'docs/src/generated/assets'))).toBe(false)
+  })
+
   it('copies top-level asset directories when copyAssets outDir is srcDir', () => {
     const root = createFixture()
     mkdirp(root, 'docs/src')
