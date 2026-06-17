@@ -16,6 +16,7 @@
     "dist/**/*.js",
     "docs/.vitepress/**/*.ts",
     "docs/src/index.md",
+    "docs-content/**/assets/**/*",
     "docs-content/**/*.md",
     "README.md",
     "LICENSE"

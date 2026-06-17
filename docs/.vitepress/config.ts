@@ -39,6 +39,13 @@ const englishDocsOptions: ExternalMarkdownOptions = {
   ],
   outDir: 'guide',
   routeBase: '/guide/',
+  copyAssets: [
+    {
+      baseDir: '../docs-content/en',
+      pattern: 'assets/**/*',
+      outDir: 'guide',
+    },
+  ],
   resolveMarkdown: resolveDocsMarkdown('/guide/'),
 }
 
@@ -54,6 +61,13 @@ const japaneseDocsOptions: ExternalMarkdownOptions = {
   ],
   outDir: 'ja',
   routeBase: '/ja/',
+  copyAssets: [
+    {
+      baseDir: '../docs-content/ja',
+      pattern: 'assets/**/*',
+      outDir: 'ja',
+    },
+  ],
   resolveMarkdown: resolveDocsMarkdown('/ja/'),
 }
 

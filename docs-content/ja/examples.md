@@ -128,6 +128,11 @@ docs/src/generated/docs/images/example.png
 docs/src/public/logo.png
 ```
 
+このページ自体も `docs-content/ja/examples.md` から生成されています。下の画像は
+同じ plugin 設定で `docs-content/ja/assets/` から copy されています。
+
+![copy された asset の流れ](./assets/copied-asset-flow.svg)
+
 ## top-level nav にも出す
 
 top-level navigation に出したい file だけ `nav: true` を返し、
