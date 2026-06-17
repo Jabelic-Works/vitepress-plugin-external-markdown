@@ -11,8 +11,8 @@ items, nav items, and item metadata.
 
 ## Documentation
 
-- English: [Getting started](docs/index.md), [Examples](docs/examples.md)
-- 日本語: [はじめに](docs/ja/index.md), [例](docs/ja/examples.md)
+- English: [Getting started](docs-content/en/index.md), [Examples](docs-content/en/examples.md)
+- 日本語: [はじめに](docs-content/ja/index.md), [例](docs-content/ja/examples.md)
 
 Run the VitePress docs locally:
 
@@ -49,6 +49,13 @@ const externalMarkdownOptions = {
   ],
   outDir: 'generated/external',
   routeBase: '/generated/external/',
+  copyAssets: [
+    {
+      baseDir: '../packages',
+      pattern: 'images/**/*',
+      outDir: 'generated/external',
+    },
+  ],
   resolveMarkdown(ctx) {
     return {
       slug: ctx.relativePath.replace(/\/index\.md$/, '').replace(/\.md$/, ''),
@@ -110,6 +117,10 @@ Generated Markdown is a build artifact. Deployments should run
 `vitepress build` with this plugin enabled so the files are regenerated before
 VitePress builds the site.
 
+Assets configured with `copyAssets` are also materialized under `srcDir`.
+Matched files keep their path relative to `baseDir`; Markdown links are not
+rewritten.
+
 The plugin writes a marker file named
 `.vitepress-plugin-external-markdown`. Existing non-empty directories without
 that marker are not cleaned.
@@ -127,6 +138,5 @@ getExternalMarkdownNav(options)
 
 ## MVP limitations
 
-This package intentionally does not rewrite relative links, copy image assets,
-create virtual routes, read remote Markdown, support MDX, or infer package docs
-automatically.
+This package intentionally does not rewrite relative links, create virtual
+routes, read remote Markdown, support MDX, or infer package docs automatically.

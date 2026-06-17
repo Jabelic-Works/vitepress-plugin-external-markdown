@@ -26,6 +26,7 @@ describe('normalizeOptions', () => {
     expect(normalized.routeBase).toBe('/generated/external/')
     expect(normalized.clean).toBe(true)
     expect(normalized.sources[0]?.baseDirAbs).toBe(path.join(root, 'packages'))
+    expect(normalized.copyAssets).toEqual([])
   })
 
   it('preserves explicit clean false and resolveMarkdown', () => {
@@ -89,6 +90,94 @@ describe('normalizeOptions', () => {
         path.join(root, 'docs'),
       ),
     ).toThrow(/source baseDir does not exist/)
+  })
+
+  it('normalizes asset copy definitions relative to srcDir', () => {
+    const root = createFixture()
+    mkdirp(root, 'packages')
+
+    const normalized = normalizeOptions(
+      {
+        sources: [{ baseDir: '../packages', pattern: '**/*.md' }],
+        outDir: 'generated/external',
+        routeBase: '/generated/external/',
+        copyAssets: [
+          {
+            baseDir: '../packages',
+            pattern: ['images/**/*', 'public/**/*'],
+            outDir: 'generated/assets',
+            clean: false,
+          },
+        ],
+      },
+      path.join(root, 'docs'),
+    )
+
+    expect(normalized.copyAssets[0]?.baseDirAbs).toBe(path.join(root, 'packages'))
+    expect(normalized.copyAssets[0]?.outDirAbs).toBe(path.join(root, 'docs/src/generated/assets'))
+    expect(normalized.copyAssets[0]?.clean).toBe(false)
+  })
+
+  it('allows asset copy definitions without Markdown sources', () => {
+    const root = createFixture()
+    mkdirp(root, 'assets')
+
+    const normalized = normalizeOptions(
+      {
+        sources: [],
+        outDir: 'generated/external',
+        routeBase: '/generated/external/',
+        copyAssets: [
+          {
+            baseDir: '../assets',
+            pattern: 'images/**/*',
+            outDir: 'generated/assets',
+          },
+        ],
+      },
+      path.join(root, 'docs'),
+    )
+
+    expect(normalized.sources).toEqual([])
+    expect(normalized.copyAssets[0]?.baseDirAbs).toBe(path.join(root, 'assets'))
+  })
+
+  it('rejects options without Markdown sources or asset copy definitions', () => {
+    const root = createFixture()
+
+    expect(() =>
+      normalizeOptions(
+        {
+          sources: [],
+          outDir: 'generated/external',
+          routeBase: '/generated/external/',
+        },
+        path.join(root, 'docs'),
+      ),
+    ).toThrow(/requires at least one source or copyAssets entry/)
+  })
+
+  it('rejects asset outDir values that escape srcDir', () => {
+    const root = createFixture()
+    mkdirp(root, 'packages')
+
+    expect(() =>
+      normalizeOptions(
+        {
+          sources: [{ baseDir: '../packages', pattern: '**/*.md' }],
+          outDir: 'generated/external',
+          routeBase: '/generated/external/',
+          copyAssets: [
+            {
+              baseDir: '../packages',
+              pattern: 'images/**/*',
+              outDir: '../assets',
+            },
+          ],
+        },
+        path.join(root, 'docs'),
+      ),
+    ).toThrow(/copyAssets.outDir must resolve inside srcDir/)
   })
 })
 
